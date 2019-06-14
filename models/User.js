@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   grade: {
     type: String,
-    required: true,
-    default: 'normal'
+    default: 'normal',
+    required: true
   },
   name: {
     type: String,

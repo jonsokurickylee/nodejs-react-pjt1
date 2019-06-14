@@ -170,8 +170,8 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   grade: {
     type: String,
-    required: true,
-    default: 'normal'
+    default: 'normal',
+    required: true
   },
   name: {
     type: String,
@@ -280,14 +280,14 @@ module.exports = router;
 
 ```
 
-## 3-10 User Registration
+## 3-11 User Registration
 
 ### change root/routes/api/users.js
 ```javascript
 const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator/check');
 
 const User = require('../../models/User');
@@ -331,7 +331,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req;
+    const { name, email, password } = req.body;
     try {
       //See if user exists
       let user = await User.findOne({ email: email });
@@ -367,6 +367,7 @@ router.post(
 );
 
 module.exports = router;
+
 
 ```
 
