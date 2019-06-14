@@ -512,3 +512,62 @@ module.exports = router;
 }
 
 ```
+
+## 3-13 Custom Auth Middleware & JWT Verify
+
+### create folder
+```bash
+$ cd ~/node/pjt
+$ mkdir middleware
+$ cd middleware
+$ touch auth.js
+$ cd ..
+```
+
+### change root/middleware/auth.js
+```javascript
+const jwt = require('jsonwebtoken');
+const config = require('config');
+
+module.exports = function(req, res, next) {
+  //Get token from header
+  const token = req.header('x-auth-token');
+  if (!token) {
+    return res.status(401).json({ msg: 'No token, authorization denied' });
+  }
+  //Verify Token
+  try {
+    const decoded = jwt.verify(token, config.get('jwtSecret'));
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
+};
+
+```
+
+### change root/routes/api/auth.js
+```javascript
+const express = require('express');
+const router = express.Router();
+const auth = require('../../middleware/auth.js');
+const User = require('../../models/User');
+// @route    GET api/auth
+// @desc     Test route
+// @access   Public
+// public    : don't need token on localstorage
+// private   : must have token on localstorage
+router.get('/', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error!!');
+  }
+});
+
+module.exports = router;
+
+```
