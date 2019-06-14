@@ -395,3 +395,10 @@ const connectDB = async () => {
 module.exports = connectDB;
 
 ```
+
+## 3-12 Implementing JWT
+
+### JWT
+[JWT HOMEPAGE]('jwt.io')
+
+### 
